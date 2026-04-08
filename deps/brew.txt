@@ -1,0 +1,11 @@
+neovim
+ripgrep
+fd
+fzf
+lazygit
+tree-sitter
+node
+pyenv
+ghostscript
+imagemagick
+luarocks

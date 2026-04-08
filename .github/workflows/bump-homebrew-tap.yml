@@ -1,0 +1,102 @@
+name: Bump Homebrew tap formula
+
+on:
+  workflow_run:
+    workflows: ["release"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  bump:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      TAP_REPO: fcrozetta/homebrew-tools
+      FORMULA_PATH: Formula/nvim-config.rb
+
+    steps:
+      - name: Resolve version from workflow run
+        id: meta
+        run: |
+          set -euo pipefail
+          HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+          HEAD_REF="${{ github.event.workflow_run.head_branch }}"
+          VERSION=""
+
+          if [[ "${HEAD_REF}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            if git ls-remote --tags "https://github.com/${{ github.repository }}.git" \
+              "refs/tags/${HEAD_REF}" "refs/tags/${HEAD_REF}^{}" \
+              | awk -v sha="${HEAD_SHA}" '$1 == sha { found = 1 } END { exit(found ? 0 : 1) }'; then
+              VERSION="${HEAD_REF}"
+            else
+              echo "head_branch (${HEAD_REF}) does not resolve to head SHA ${HEAD_SHA}" >&2
+              exit 1
+            fi
+          fi
+
+          if [[ -z "${VERSION}" ]]; then
+            mapfile -t MATCHING_TAGS < <(
+              git ls-remote --tags "https://github.com/${{ github.repository }}.git" \
+              | awk -v sha="${HEAD_SHA}" '$1 == sha {
+                ref = $2; sub("^refs/tags/", "", ref); sub("\\^\\{\\}$", "", ref)
+                if (ref ~ /^[0-9]+\.[0-9]+\.[0-9]+$/) print ref
+              }' | sort -u
+            )
+            if [[ "${#MATCHING_TAGS[@]}" -eq 1 ]]; then
+              VERSION="${MATCHING_TAGS[0]}"
+            elif [[ "${#MATCHING_TAGS[@]}" -gt 1 ]]; then
+              echo "Ambiguous semver tags for SHA ${HEAD_SHA}: ${MATCHING_TAGS[*]}" >&2
+              exit 1
+            fi
+          fi
+
+          if [[ -z "${VERSION}" || ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Unable to resolve semver tag for SHA ${HEAD_SHA}" >&2
+            exit 1
+          fi
+
+          TARBALL_URL="https://github.com/${{ github.repository }}/archive/refs/tags/${VERSION}.tar.gz"
+          SHA256="$(curl -fsSL "${TARBALL_URL}" | sha256sum | cut -d' ' -f1)"
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "sha256=${SHA256}" >> "$GITHUB_OUTPUT"
+          echo "release_url=https://github.com/${{ github.repository }}/releases/tag/${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+
+      - name: Generate formula
+        id: formula
+        run: |
+          ./scripts/generate-formula.sh \
+            "${{ steps.meta.outputs.version }}" \
+            "${{ steps.meta.outputs.sha256 }}" \
+            "https://github.com/${{ github.repository }}" \
+            > /tmp/nvim-config.rb
+
+      - name: Checkout tap repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TAP_REPO }}
+          token: ${{ secrets.PAT_BREW_SCOOP_GITHUB_TOKEN }}
+          path: tap
+          fetch-depth: 0
+
+      - name: Update formula
+        run: cp /tmp/nvim-config.rb "tap/${FORMULA_PATH}"
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT_BREW_SCOOP_GITHUB_TOKEN }}
+          path: tap
+          commit-message: "nvim-config: bump to ${{ steps.meta.outputs.version }}"
+          branch: "bump/nvim-config-${{ steps.meta.outputs.version }}"
+          title: "nvim-config: bump to ${{ steps.meta.outputs.version }}"
+          body: |
+            Automated bump from release.
+            - Version: `${{ steps.meta.outputs.version }}`
+            - SHA256: `${{ steps.meta.outputs.sha256 }}`
+            - Release: ${{ steps.meta.outputs.release_url }}
