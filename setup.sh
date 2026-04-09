@@ -25,11 +25,18 @@ fi
 # --- Symlink config ---
 if [ "$SCRIPT_DIR" != "$NVIM_DIR" ]; then
   if [ -d "$NVIM_DIR" ] && [ ! -L "$NVIM_DIR" ]; then
-    echo "==> Backing up existing config to ${NVIM_DIR}.bak"
-    mv "$NVIM_DIR" "${NVIM_DIR}.bak"
+    BACKUP="${NVIM_DIR}.$(date +%Y%m%d)"
+    echo "==> Backing up existing config to ${BACKUP}"
+    mv "$NVIM_DIR" "$BACKUP"
   fi
   echo "==> Linking config to ${NVIM_DIR}"
   ln -sfn "$SCRIPT_DIR" "$NVIM_DIR"
+fi
+
+# --- Skip remaining steps when called from Homebrew formula ---
+if [ "${HOMEBREW_FORMULA:-}" = "1" ]; then
+  echo "==> Done (Homebrew). Mason LSP servers install on first launch."
+  exit 0
 fi
 
 # --- npm packages ---
@@ -38,14 +45,6 @@ if command -v npm &>/dev/null; then
   xargs npm install -g < "$DEPS_DIR/npm.txt"
 else
   echo "WARNING: npm not found, skipping npm packages"
-fi
-
-# --- Python (uv) ---
-if command -v uv &>/dev/null; then
-  echo "==> Installing Python 3.12 via uv..."
-  uv python install 3.12 --default
-else
-  echo "WARNING: uv not found, skipping Python setup"
 fi
 
 # --- Neovim headless setup ---
