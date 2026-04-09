@@ -33,18 +33,18 @@ if [ "$SCRIPT_DIR" != "$NVIM_DIR" ]; then
   ln -sfn "$SCRIPT_DIR" "$NVIM_DIR"
 fi
 
-# --- Skip remaining steps when called from Homebrew formula ---
-if [ "${HOMEBREW_FORMULA:-}" = "1" ]; then
-  echo "==> Done (Homebrew). Mason LSP servers install on first launch."
-  exit 0
-fi
-
 # --- npm packages ---
 if command -v npm &>/dev/null; then
   echo "==> Installing npm global packages..."
   xargs npm install -g < "$DEPS_DIR/npm.txt"
 else
   echo "WARNING: npm not found, skipping npm packages"
+fi
+
+# --- Skip headless Neovim setup when called from Homebrew formula ---
+if [ "${HOMEBREW_FORMULA:-}" = "1" ]; then
+  echo "==> Done (Homebrew). Mason LSP servers install on first launch."
+  exit 0
 fi
 
 # --- Neovim headless setup ---

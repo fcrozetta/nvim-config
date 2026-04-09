@@ -10,11 +10,8 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "<CR>", "i", opts)
     vim.keymap.set("n", "<leader>tj", "i", opts)
 
-    -- One-key expand/collapse toggle (keep your preference)
-    vim.keymap.set("n", "<leader>te", "l", opts) -- because you said l already expands/collapses
-
-    -- Handy extras (use built-ins if present)
-    vim.keymap.set("n", "<leader>to", "O", opts) -- output (if O is mapped by neotest)
+    vim.keymap.set("n", "<leader>te", "l", opts)
+    vim.keymap.set("n", "<leader>to", "O", opts)
     vim.keymap.set("n", "q", "q", opts) -- keep close
   end,
 })
