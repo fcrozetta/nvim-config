@@ -9,3 +9,4 @@ uv
 ghostscript
 imagemagick
 luarocks
+python@3.12

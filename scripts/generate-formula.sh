@@ -39,9 +39,6 @@ ${DEPENDS}
   def post_install
     ENV["HOMEBREW_FORMULA"] = "1"
     system bin/"nvim-config-setup"
-    unless quiet_system "python3", "--version"
-      system "uv", "python", "install", "3.12", "--default"
-    end
   end
 
   def caveats
