@@ -1,30 +1,28 @@
 name: Bump Homebrew tap formula
 
 on:
-  workflow_run:
-    workflows: ["release"]
-    types: [completed]
+  release:
+    types: [published]
 
 permissions:
   contents: read
 
 jobs:
   bump:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
       TAP_REPO: fcrozetta/homebrew-tools
       FORMULA_PATH: Formula/nvim-config.rb
 
     steps:
-      - name: Resolve version from workflow run
+      - name: Resolve version from release
         id: meta
         run: |
           set -euo pipefail
-          VERSION="${{ github.event.workflow_run.head_branch }}"
+          VERSION="${{ github.event.release.tag_name }}"
 
           if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "head_branch (${VERSION}) is not a semver tag" >&2
+            echo "Tag (${VERSION}) is not a semver tag" >&2
             exit 1
           fi
 
