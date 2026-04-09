@@ -35,7 +35,7 @@ jobs:
           VERSION="${{ github.ref_name }}"
 
           TARBALL_URL="https://github.com/${{ github.repository }}/archive/refs/tags/${VERSION}.tar.gz"
-          SHA256="$(curl -fsSL "${TARBALL_URL}" | sha256sum | cut -d' ' -f1)"
+          SHA256="$(curl -fsSL -H "Authorization: token ${{ github.token }}" "${TARBALL_URL}" | sha256sum | cut -d' ' -f1)"
 
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "sha256=${SHA256}" >> "$GITHUB_OUTPUT"
