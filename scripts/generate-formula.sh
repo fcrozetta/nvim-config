@@ -31,9 +31,9 @@ class NvimConfig < Formula
 
 ${DEPENDS}
   def install
-    pkgshare.install Dir["*"], ".gitignore", ".neoconf.json"
     bin.install "setup.sh" => "nvim-config-setup"
     inreplace bin/"nvim-config-setup", /^SCRIPT_DIR=.*$/, "SCRIPT_DIR=\"#{pkgshare}\""
+    pkgshare.install Dir["*"], ".gitignore", ".neoconf.json"
   end
 
   def post_install
