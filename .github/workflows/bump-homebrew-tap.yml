@@ -90,7 +90,7 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.PAT_BREW_SCOOP_GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_BREW_GITHUB_TOKEN }}
           path: tap
           commit-message: "nvim-config: bump to ${{ steps.meta.outputs.version }}"
           branch: "bump/nvim-config-${{ steps.meta.outputs.version }}"
