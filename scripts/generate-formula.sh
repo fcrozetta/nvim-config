@@ -32,6 +32,7 @@ class NvimConfig < Formula
 ${DEPENDS}
   def install
     bin.install "setup.sh" => "nvim-config-setup"
+    bin.install "scripts/uninstall.sh" => "nvim-config-uninstall"
     inreplace bin/"nvim-config-setup", /^SCRIPT_DIR=.*$/, "SCRIPT_DIR=\"#{pkgshare}\""
     pkgshare.install Dir["*"], ".gitignore", ".neoconf.json"
   end
@@ -41,10 +42,15 @@ ${DEPENDS}
     system bin/"nvim-config-setup"
   end
 
+  def uninstall
+    system bin/"nvim-config-uninstall"
+  end
+
   def caveats
     <<~EOS
       Config symlinked to ~/.config/nvim
       Run 'nvim-config-setup' to re-link after upgrades.
+      Run 'nvim-config-uninstall' before 'brew uninstall' for full cleanup.
     EOS
   end
 end
