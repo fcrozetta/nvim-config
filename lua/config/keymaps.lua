@@ -19,6 +19,9 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Quick edit .env file from project root
+vim.keymap.set("n", "<leader>be", "<cmd>edit .env<cr>", { desc = "Edit .env" })
+
 -- In lspsaga floating windows: allow <Esc> to close (q already works)
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "lspsaga*" },

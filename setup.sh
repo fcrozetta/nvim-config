@@ -40,16 +40,12 @@ else
   echo "WARNING: npm not found, skipping npm packages"
 fi
 
-# --- Python (pyenv) ---
-if command -v pyenv &>/dev/null; then
-  PYTHON_VERSION="3.12"
-  if ! pyenv versions --bare | grep -q "^${PYTHON_VERSION}"; then
-    echo "==> Installing Python ${PYTHON_VERSION} via pyenv..."
-    pyenv install "$PYTHON_VERSION"
-  fi
-  pyenv global "$PYTHON_VERSION"
+# --- Python (uv) ---
+if command -v uv &>/dev/null; then
+  echo "==> Ensuring Python is available via uv..."
+  uv python install 2>/dev/null || true
 else
-  echo "WARNING: pyenv not found, skipping Python setup"
+  echo "WARNING: uv not found, skipping Python setup"
 fi
 
 # --- Neovim headless setup ---

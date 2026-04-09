@@ -5,7 +5,7 @@ fzf
 lazygit
 tree-sitter
 node
-pyenv
+uv
 ghostscript
 imagemagick
 luarocks
