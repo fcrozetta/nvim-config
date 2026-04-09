@@ -49,7 +49,6 @@ ${DEPENDS}
   def caveats
     <<~EOS
       Config symlinked to ~/.config/nvim
-      Run 'nvim-config-setup' to re-link after upgrades.
       Run 'nvim-config-uninstall' before 'brew uninstall' for full cleanup.
     EOS
   end
