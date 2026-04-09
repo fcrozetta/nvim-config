@@ -42,8 +42,8 @@ fi
 
 # --- Python (uv) ---
 if command -v uv &>/dev/null; then
-  echo "==> Ensuring Python is available via uv..."
-  uv python install 2>/dev/null || true
+  echo "==> Installing Python 3.12 via uv..."
+  uv python install 3.12 --default
 else
   echo "WARNING: uv not found, skipping Python setup"
 fi
