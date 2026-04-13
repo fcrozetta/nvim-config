@@ -13,9 +13,14 @@ brew install fcrozetta/tools/nvim-config
 ```
 
 This installs all dependencies, symlinks the config to
-`~/.config/nvim`, and sets up npm packages.
+`~/.config/nvim`, and sets up pnpm packages.
 If you already have a Neovim config, it will be backed up
 automatically.
+
+> [!WARNING]
+> `setup.sh` executes `brew install`, `pnpm add -g`, plugin
+> bootstrap, and Treesitter updates. Treat installation as
+> trusted-code execution, not as a passive config copy.
 
 After upgrades, run `nvim-config-setup` to re-link.
 
@@ -29,10 +34,15 @@ git clone https://github.com/fcrozetta/nvim-config.git \
 ~/.config/nvim/setup.sh
 ```
 
-The setup script installs brew and npm dependencies,
+The setup script installs brew and pnpm dependencies,
 symlinks the config, syncs plugins, and installs
 Treesitter parsers. Mason LSP servers install on first
 launch.
+
+> [!NOTE]
+> Mermaid CLI is installed with `pnpm add -g`. The setup
+> script exports `PNPM_HOME` as `~/.local/share/pnpm` when it
+> is not already set.
 
 ### Uninstall
 
@@ -44,7 +54,12 @@ brew autoremove
 
 The uninstall script removes the config symlink, restores
 the most recent backup if one exists, cleans up plugin
-data, and removes npm packages.
+data, and removes the Mermaid CLI package installed by pnpm.
+
+> [!WARNING]
+> `nvim-config-uninstall` now prints the paths it will delete
+> and asks for confirmation before removing Neovim data,
+> state, cache, backups, and the Mermaid CLI install.
 
 ### Dependencies
 
@@ -59,12 +74,13 @@ Installed automatically by either method above.
 | lazygit                 | Terminal git UI             |
 | tree-sitter             | Syntax parsing              |
 | node                    | Required by several plugins |
+| pnpm                    | Mermaid CLI package manager |
 | python@3.12             | Python tooling support      |
 | uv                      | Python package manager      |
 | ghostscript             | PDF/image rendering         |
 | imagemagick             | Image processing            |
 | luarocks                | Lua package manager         |
-| @mermaid-js/mermaid-cli | Diagram rendering (npm)     |
+| @mermaid-js/mermaid-cli | Diagram rendering (pnpm)    |
 
 ## What's included
 

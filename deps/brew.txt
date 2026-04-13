@@ -5,6 +5,7 @@ fzf
 lazygit
 tree-sitter
 node
+pnpm
 uv
 ghostscript
 imagemagick
