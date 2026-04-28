@@ -23,18 +23,20 @@ steps.
 - Installs pnpm globals (Mermaid CLI).
 - Bootstraps Neovim plugins and Treesitter parsers.
 
-Re-run `nvim-config-setup` after upgrades to re-link and
-re-sync.
-
 > [!WARNING]
 > `nvim-config-setup` executes `pnpm add -g`, plugin
 > bootstrap, and Treesitter updates. Treat it as
 > trusted-code execution, not a passive config copy.
 
-> [!NOTE]
-> Mermaid CLI is installed with `pnpm add -g`. The setup
-> script exports `PNPM_HOME` as `~/.local/share/pnpm` when it
-> is not already set.
+### Upgrades
+
+```bash
+brew upgrade nvim-config
+```
+
+That's it — open nvim and you're done. Re-run
+`nvim-config-setup` only if something looks off after
+the upgrade.
 
 ### Uninstall
 
@@ -55,7 +57,7 @@ data, and removes the Mermaid CLI package installed by pnpm.
 
 ### Dependencies
 
-Installed automatically by either method above.
+Installed automatically by `brew install`.
 
 | Tool                    | Purpose                     |
 | ----------------------- | --------------------------- |
