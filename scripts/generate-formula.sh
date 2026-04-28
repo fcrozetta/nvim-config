@@ -33,22 +33,20 @@ ${DEPENDS}
   def install
     bin.install "setup.sh" => "nvim-config-setup"
     bin.install "scripts/uninstall.sh" => "nvim-config-uninstall"
-    inreplace bin/"nvim-config-setup", /^SCRIPT_DIR=.*$/, "SCRIPT_DIR=\"#{pkgshare}\""
+    inreplace bin/"nvim-config-setup", /^SCRIPT_DIR=.*$/, "SCRIPT_DIR=\"#{opt_pkgshare}\""
     pkgshare.install Dir["*"], ".gitignore", ".neoconf.json"
-  end
-
-  def post_install
-    ENV["HOMEBREW_FORMULA"] = "1"
-    system bin/"nvim-config-setup"
-  end
-
-  def uninstall
-    system bin/"nvim-config-uninstall"
   end
 
   def caveats
     <<~EOS
-      Config symlinked to ~/.config/nvim
+      Brew cannot write outside its prefix during install.
+      Finish setup by running:
+
+        nvim-config-setup
+
+      This symlinks ~/.config/nvim (backing up any existing config),
+      installs pnpm packages, and bootstraps Neovim plugins.
+
       Run 'nvim-config-uninstall' before 'brew uninstall' for full cleanup.
     EOS
   end

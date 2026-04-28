@@ -6,38 +6,30 @@ Works on macOS and Linux.
 
 ## Installation
 
-### Homebrew (recommended)
-
 ```bash
 brew install fcrozetta/tools/nvim-config
+nvim-config-setup
 ```
 
-This installs all dependencies, symlinks the config to
-`~/.config/nvim`, and sets up pnpm packages.
-If you already have a Neovim config, it will be backed up
-automatically.
+`brew install` installs all dependencies declared in the
+formula's `depends_on`. It cannot write outside its prefix,
+so it does **not** symlink the config or run the post-install
+steps.
+
+`nvim-config-setup` does the rest:
+
+- Symlinks the config to `~/.config/nvim` (backing up any
+  existing config to `~/.config/nvim.<timestamp>`).
+- Installs pnpm globals (Mermaid CLI).
+- Bootstraps Neovim plugins and Treesitter parsers.
+
+Re-run `nvim-config-setup` after upgrades to re-link and
+re-sync.
 
 > [!WARNING]
-> `setup.sh` executes `brew install`, `pnpm add -g`, plugin
-> bootstrap, and Treesitter updates. Treat installation as
-> trusted-code execution, not as a passive config copy.
-
-After upgrades, run `nvim-config-setup` to re-link.
-
-### Manual
-
-Requires [Homebrew](https://brew.sh/) installed.
-
-```bash
-git clone https://github.com/fcrozetta/nvim-config.git \
-  ~/.config/nvim
-~/.config/nvim/setup.sh
-```
-
-The setup script installs brew and pnpm dependencies,
-symlinks the config, syncs plugins, and installs
-Treesitter parsers. Mason LSP servers install on first
-launch.
+> `nvim-config-setup` executes `pnpm add -g`, plugin
+> bootstrap, and Treesitter updates. Treat it as
+> trusted-code execution, not a passive config copy.
 
 > [!NOTE]
 > Mermaid CLI is installed with `pnpm add -g`. The setup
