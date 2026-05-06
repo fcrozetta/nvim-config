@@ -13,3 +13,6 @@ vim.env.PNPM_HOME = pnpm_home
 if vim.env.PATH and not vim.env.PATH:find(pnpm_home, 1, true) then
   vim.env.PATH = pnpm_home .. ":" .. vim.env.PATH
 end
+
+vim.opt.title = true
+vim.opt.titlestring = "nvim - %{fnamemodify(getcwd(),':t')}"
