@@ -8,3 +8,6 @@ foo.*
 *.log
 data
 spell/
+
+# Machine-local / personal specs (auto-imported by LazyVim, never committed)
+*.local.lua
