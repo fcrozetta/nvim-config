@@ -22,6 +22,10 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Cycle through open buffers with Option+] / Option+[
+vim.keymap.set("n", "<A-]>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+vim.keymap.set("n", "<A-[>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+
 -- Quick edit .env file from project root
 vim.keymap.set("n", "<leader>be", function()
   local root = LazyVim.root()
