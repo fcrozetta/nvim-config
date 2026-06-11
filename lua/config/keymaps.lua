@@ -26,6 +26,20 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.keymap.set("n", "<A-]>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 vim.keymap.set("n", "<A-[>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 
+-- Go to top of the enclosing function (its signature), via treesitter.
+vim.keymap.set("n", "[f", function()
+  local node = vim.treesitter.get_node()
+  while node do
+    local t = node:type()
+    if t:find("function") or t:find("method") then
+      local row, col = node:start()
+      vim.api.nvim_win_set_cursor(0, { row + 1, col })
+      return
+    end
+    node = node:parent()
+  end
+end, { desc = "Go to function signature" })
+
 -- Quick edit .env file from project root
 vim.keymap.set("n", "<leader>be", function()
   local root = LazyVim.root()

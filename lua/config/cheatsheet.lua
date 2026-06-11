@@ -9,20 +9,25 @@ M.win = nil
 
 local sections = {
   {
-    title = "Completion (blink.cmp)",
+    title = "Navigation",
     items = {
-      { "<Tab>", "Accept / select completion" },
-      { "<Enter>", "Newline (does NOT accept)" },
-      { "<C-n>/<C-p>", "Move selection down / up" },
-      { "<S-Tab>", "Jump snippet placeholder back" },
+      { "<A-]>", "Next file buffer" },
+      { "<A-[>", "Prev file buffer" },
+      { "[f", "Go to top of function (signature)" },
+      { "%", "Go to matching ()[]{}" },
     },
   },
   {
-    title = "Windows",
+    title = "LSP",
     items = {
-      { "<C-w>s", "Split horizontal" },
-      { "<C-w>v", "Split vertical" },
-      { "<C-h/j/k/l>", "Move between splits" },
+      { "gd", "Open definition popover" },
+    },
+  },
+  {
+    title = "Debug",
+    items = {
+      { "<leader>dF", "Debug API (FastAPI / uvicorn)" },
+      { "<leader>db", "Toggle breakpoint" },
     },
   },
   {
