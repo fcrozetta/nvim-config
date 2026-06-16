@@ -109,14 +109,27 @@ vim.keymap.set({ "n", "x" }, "<leader>cP", function()
     e = s
   end
 
-  local url
-  if base:find("gitlab") then
-    url = string.format("%s/-/blob/%s/%s#L%d-%d", base, sha, relpath, s, e)
-  elseif base:find("bitbucket") then
-    url = string.format("%s/src/%s/%s#lines-%d:%d", base, sha, relpath, s, e)
-  else -- github.com, GitHub Enterprise, and most others
-    url = string.format("%s/blob/%s/%s#L%d-L%d", base, sha, relpath, s, e)
+  -- Forge path styles. First host match wins; falls back to github otherwise.
+  -- Add new self-hosted instances by prepending { host = "...", style = "..." }.
+  local forges = {
+    { host = "git%.fcrozetta%.app", style = "gitea" }, -- personal Forgejo (Gitea URL shape)
+    { host = "gitlab", style = "gitlab" },
+    { host = "bitbucket", style = "bitbucket" },
+  }
+  local templates = {
+    github = "%s/blob/%s/%s#L%d-L%d",
+    gitlab = "%s/-/blob/%s/%s#L%d-%d",
+    gitea = "%s/src/commit/%s/%s#L%d-L%d",
+    bitbucket = "%s/src/%s/%s#lines-%d:%d",
+  }
+  local style = "github"
+  for _, f in ipairs(forges) do
+    if base:find(f.host) then
+      style = f.style
+      break
+    end
   end
+  local url = string.format(templates[style], base, sha, relpath, s, e)
 
   vim.fn.setreg("+", url)
   vim.notify("Copied: " .. url)
