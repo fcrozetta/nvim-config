@@ -31,6 +31,13 @@ local sections = {
     },
   },
   {
+    title = "Share / PR refs",
+    items = {
+      { "<leader>cp", "Copy file:line (project-relative)" },
+      { "<leader>cP", "Copy git permalink (commit-pinned)" },
+    },
+  },
+  {
     title = "Misc",
     items = {
       { "<leader>h", "Toggle this cheatsheet" },
